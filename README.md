@@ -23,7 +23,7 @@ Then you must place your credentials for VirusTotal into the configuration file:
 into the `virustotal_api_token` variable in the
 `/etc/cb/integrations/virustotal/connector.conf` file.
 
-Any errors will be logged into `/var/log/cb/integrations/virustotal/virustotal.log`.
+Any errors will be logged into `/var/log/cb/integrations/virustotalconnector/virustotalconnector.log`.
 
 ## Troubleshooting
 
