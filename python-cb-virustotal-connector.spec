@@ -36,6 +36,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %posttrans
 mkdir -p /usr/share/cb/integrations/virustotal/db
+mkdir -p /var/log/cb/integrations/virustotal
 chkconfig --add cb-virustotal-connector
 chkconfig --level 345 cb-virustotal-connector on
 

@@ -17,7 +17,8 @@ if __name__ == "__main__":
 
     daemon = bridge.VirusTotalConnector(name,
                                         configfile="/etc/cb/integrations/virustotal/connector.conf",
-                                        work_directory="/usr/share/cb/integrations/virustotal/db")
+                                        work_directory="/usr/share/cb/integrations/virustotal/db",
+                                        logfile="/var/log/cb/integrations/virustotal/virustotal.log")
     if len(sys.argv) == 2:
         if 'start' == sys.argv[1]:
             daemon.start()
