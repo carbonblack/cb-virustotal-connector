@@ -28,7 +28,7 @@ Any errors will be logged into `/var/log/cb/integrations/virustotalconnector/vir
 ## Troubleshooting
 
 If you suspect a problem, please first look at the VirusTotal connector logs found here:
-`/var/log/cb/integrations/virustotal/virustotal.log`
+`/var/log/cb/integrations/virustotalconnector/virustotalconnector.log`
 (There might be multiple files as the logger "rolls over" when the log file hits a certain size).
 
 If you want to re-run the analysis across your binaries:
