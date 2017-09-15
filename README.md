@@ -15,7 +15,7 @@ curl -O https://opensource.carbonblack.com/release/x86_64/CbOpenSource.repo
 yum install python-cb-virustotal-connector
 ```
 
-Once the software is installed via YUM, copy the `/etc/cb/integrations/virusyotal/connector.conf.example` file to
+Once the software is installed via YUM, copy the `/etc/cb/integrations/virustotal/connector.conf.example` file to
 `/etc/cb/integrations/virustotal/connector.conf`. Edit this file and place your Carbon Black API key into the
 `carbonblack_server_token` variable and your Carbon Black server's base URL into the `carbonblack_server_url` variable.
 
