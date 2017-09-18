@@ -6,6 +6,9 @@ Feed on your Carbon Black server. The feed will then tag any binaries executed o
 endpoints identified as malware by VirusTotal. Only binaries submitted by the connector
 for analysis will be included in the generated Intelligence Feed.
 
+**To use this connector, you must have a VirusTotal Private API key.** You can
+apply for a private API key through the VirusTotal web interface.
+
 ## Installation Quickstart
 
 As root on your Carbon Black or other RPM based 64-bit Linux distribution server:
@@ -24,6 +27,22 @@ into the `virustotal_api_token` variable in the
 `/etc/cb/integrations/virustotal/connector.conf` file.
 
 Any errors will be logged into `/var/log/cb/integrations/virustotal/virustotal.log`.
+
+## Additional Configuration Options
+
+By default, binaries which are already known by VirusTotal will not be resubmitted for rescanning.
+If this functionality is desired, the rescan_window option can be added to the configuration file 
+to set the window of time in which binaries are to be resubmitted for scanning.
+
+```
+;Window of time within which to rescan a submitted file
+;rescan_window=1D
+;FORMAT=%D%S
+;S=H,M,D,W = hours,minutes,days,weeks
+;NEVER= do not rescan binaries no matter how old the latest scan is (DEFAULT)
+rescan_window=365D
+
+```
 
 ## Troubleshooting
 
@@ -54,17 +73,3 @@ When you contact Carbon Black Developer Relations Technical Support with an issu
 * Action causing the problem, error message returned, and event log output (as appropriate)
 * Problem severity
 
-#### Additional Configuration Options:
-By default, binaries which are already known by VirusTotal will not be resubmitted for rescanning.
-If this functionality is desired, the rescan_window option can be added to the configuration file 
-to set the window of time in which binaries are to be resubmitted for scanning.
-
-```
-;Window of time within which to rescan a submitted file
-;rescan_window=1D
-;FORMAT=%D%S
-;S=H,M,D,W = hours,minutes,days,weeks
-;NEVER= do not rescan binaries no matter how old the latest scan is (DEFAULT)
-rescan_window=365D
-
-```

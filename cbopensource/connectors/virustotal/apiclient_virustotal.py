@@ -35,7 +35,7 @@ class VirusTotalAnalysisClient(object):
             raise Exception("No resources provided")
         headers = {
             "Accept-Encoding": "gzip, deflate",
-            "User-Agent": "gzip,  My Python requests library example client or username"
+            "User-Agent": "gzip,  cb-virustotal-connector/1.0"
         }
         response = self.session.post(self.url + "rescan", params=params, headers=headers)
         log.debug("Rescan hash: response = %s" % response)
@@ -52,7 +52,7 @@ class VirusTotalAnalysisClient(object):
             raise Exception("No resources provided")
         headers = {
             "Accept-Encoding": "gzip, deflate",
-            "User-Agent": "gzip,  My Python requests library example client or username"
+            "User-Agent": "gzip,  cb-virustotal-connector/1.0"
         }
         response = self.session.get(self.url + "report",
                                     params=params, headers=headers)
