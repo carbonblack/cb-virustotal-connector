@@ -12,7 +12,7 @@
 
 exec="/usr/share/cb/integrations/virustotal/bin/cb-virustotal-connector"
 prog="cb-virustotal-connector"
-pidfile="/var/run/cb/integrations/virustotal.pid"
+pidfile="/var/run/cb/integrations/virustotalconnector.pid"
 
 lockfile=/var/lock/subsys/$prog
 
