@@ -9,6 +9,10 @@ for analysis will be included in the generated Intelligence Feed.
 **To use this connector, you must have a VirusTotal Private API key.** You can
 apply for a private API key through the VirusTotal web interface.
 
+Log in to www.virustotal.com with your credentials, navigate to your profile -> settings and select the apikey tab.
+There will be a button for requesting a private api key from VT. 
+https://www.virustotal.com/#/settings/apikey
+
 ## Installation Quickstart
 
 As root on your Carbon Black or other RPM based 64-bit Linux distribution server:
