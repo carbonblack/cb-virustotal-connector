@@ -6,8 +6,11 @@ Feed on your Carbon Black server. The feed will then tag any binaries executed o
 endpoints identified as malware by VirusTotal. Only binaries submitted by the connector
 for analysis will be included in the generated Intelligence Feed.
 
-**To use this connector, you must have a VirusTotal Private API key.** You can
-apply for a private API key through the VirusTotal web interface.
+**To use this connector, you must have a VirusTotal Private API key. You cannot use a VirusTotal
+Public API key as the Public API is severely rate limited.** You can
+apply for a private API key through the VirusTotal web interface. VirusTotal Private API keys
+are only available via a paid subscription to VirusTotal. For more information on the Private
+API, see the [VirusTotal Frequently Asked Questions](https://www.virustotal.com/en/faq/#virustotal-api).
 
 Log in to www.virustotal.com with your credentials, navigate to your profile -> settings and select the apikey tab.
 There will be a button for requesting a private api key from VT. 
