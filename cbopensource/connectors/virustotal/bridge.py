@@ -58,7 +58,7 @@ class VirusTotalProvider(BinaryAnalysisProvider):
         try:
             response = self.virustotal_analysis.get_report(resource_hash=md5sum)
         except VTAPIQUOTAREACHED as vte:
-            log.info(vte)
+            log.debug(vte)
             return None
         response_code = response.get("response_code", -1)
         verbose_msg = response.get("verbose_msg", "")
@@ -76,6 +76,7 @@ class VirusTotalProvider(BinaryAnalysisProvider):
                 try:
                     self.virustotal_analysis.rescan_hash(md5sum)
                 except VTAPIQUOTAREACHED as vte:
+                    log.debug(vte)
                     return None
                 except Exception as e:
                     log.debug(e)
