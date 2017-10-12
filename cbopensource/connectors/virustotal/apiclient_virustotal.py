@@ -5,6 +5,9 @@ import os
 
 log = logging.getLogger(__name__)
 
+class VTAPIQUOTAREACHED(Exception):
+    pass
+
 
 class VirusTotalAnalysisClient(object):
 
@@ -24,6 +27,8 @@ class VirusTotalAnalysisClient(object):
         files = {'file': (file_name, open(file_name, 'rb'))} if file_name else {'file': (resource_hash, stream)}
         response = self.session.post(self.url + 'scan', files=files, params=params)
         log.debug("submit_file: response = %s" % response)
+        if response.status_code == 204:
+            raise VTAPIQUOTAREACHED()
         return response.json()
 
     def rescan_hash(self, resource_hash):
@@ -38,6 +43,8 @@ class VirusTotalAnalysisClient(object):
             "User-Agent": "gzip,  cb-virustotal-connector/1.0"
         }
         response = self.session.post(self.url + "rescan", params=params, headers=headers)
+        if response.status_code == 204:
+            raise VTAPIQUOTAREACHED()
         log.debug("Rescan hash: response = %s" % response)
         return response.json()
 
@@ -56,5 +63,7 @@ class VirusTotalAnalysisClient(object):
         }
         response = self.session.get(self.url + "report",
                                     params=params, headers=headers)
+        if response.status_code == 204:
+            raise VTAPIQUOTAREACHED()
         log.debug("get_report: response = %s " % response)
         return response.json()
