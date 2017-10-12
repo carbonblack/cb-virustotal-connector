@@ -2,7 +2,7 @@ from cbint.utils.detonation import DetonationDaemon
 from cbint.utils.detonation.binary_analysis import (BinaryAnalysisProvider,
                                                     AnalysisTemporaryError, AnalysisResult, AnalysisInProgress)
 from cbapi.connection import CbAPISessionAdapter
-from apiclient_virustotal import VirusTotalAnalysisClient
+from apiclient_virustotal import (VirusTotalAnalysisClient, VTAPIQUOTAREACHED)
 from datetime import (datetime, timedelta)
 
 import cbint.utils.feed
@@ -55,50 +55,52 @@ class VirusTotalProvider(BinaryAnalysisProvider):
     def check_result_for(self, md5sum):
 
         log.info("Submitting binary %s to VT for analysis" % md5sum)
-
-        response = self.virustotal_analysis.get_report(resource_hash=md5sum)
-
+        try:
+            response = self.virustotal_analysis.get_report(resource_hash=md5sum)
+        except VTAPIQUOTAREACHED as vte:
+            log.info(vte)
+            return None
         response_code = response.get("response_code", -1)
         verbose_msg = response.get("verbose_msg", "")
 
         if response_code == -2 or "Your resource is queued for analysis" in verbose_msg:
             return AnalysisInProgress(retry_in=180)
-
         elif response_code == 1:
             scan_id = response.get('scan_id', None)
             now = datetime.now()
-            scan_date = datetime.strptime(response['scan_date'], "%Y-%m-%d %H:%M:%S")
-
+            scan_date_str = response.get('scan_date',None)
+            scan_date = datetime.strptime(scan_date_str, "%Y-%m-%d %H:%M:%S") if scan_date_str else None
             log.info("Binary %s has not been scanned since: %s - timenow: %s" % (md5sum, scan_date, now))
-
-            if self.rescan_window and (now - scan_date) >= self.rescan_window:
-
+            if self.rescan_window and scan_date and (now - scan_date) >= self.rescan_window:
                 log.info("HIT RESCAN WINDOW: Binary %s" % md5sum)
                 try:
                     self.virustotal_analysis.rescan_hash(md5sum)
+                except VTAPIQUOTAREACHED as vte:
+                    return None
                 except Exception as e:
-                    log.debug("Exception throw in rescan window try in check_results_for")
                     log.debug(e)
-                    return None  # TODO: is this right?
+                    return None
                 return AnalysisInProgress(retry_in=180)
-            else:
-                return self.make_result(scan_id,md5=md5sum)
+            elif scan_id:
+                return self.make_result(scan_id,md5=md5sum,result=response)
         else:  # response_code == 0 , -1 other cases all indicate error condition / binary not yet seen by VT
             return None
 
     def analyze_binary(self, md5sum, binary_file_stream):
 
         log.info("Submitting binary %s to VT for analysis" % md5sum)
+        try:
+            response = self.virustotal_analysis.submit_file(resource_hash=md5sum, stream=binary_file_stream)
+        except VTAPIQUOTAREACHED as vte:
+            raise AnalysisTemporaryError(message="VTAPIQUOTAREACHED", retry_in=15*60)
 
-        response = self.virustotal_analysis.submit_file(resource_hash=md5sum, stream=binary_file_stream)
         response_code = response.get("response_code", -1)
         verbose_msg = response.get("verbose_msg", "")
-
         # response_code == -2 or "scan request successfully queued" is the wait condition
         if response_code == -2 or "Scan request successfully queued" in verbose_msg:
             raise AnalysisTemporaryError(message="VirusTotal report not yet ready -> %s" % verbose_msg, retry_in=120)
         elif response_code == 1:
-            scan_id = response.get("scan_id", None)
+            scan_id = response.get("scan_id", None);
             return self.make_result(scan_id=scan_id, result=response)
         else:
             raise AnalysisTemporaryError(message="Unknown error? % s" % response, retry_in=120)
