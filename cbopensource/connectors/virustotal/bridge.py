@@ -100,7 +100,7 @@ class VirusTotalProvider(BinaryAnalysisProvider):
         # response_code == -2 or "scan request successfully queued" is the wait condition
         if response_code == -2 or "Scan request successfully queued" in verbose_msg:
             raise AnalysisTemporaryError(message="VirusTotal report not yet ready -> %s" % verbose_msg, retry_in=120)
-        elif response_code == 1
+        elif response_code == 1:
             scan_id = response.get("scan_id", None)
             return self.make_result(scan_id=scan_id, result=response)
         else:
