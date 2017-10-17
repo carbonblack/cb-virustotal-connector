@@ -15,7 +15,7 @@ class VirusTotalAnalysisClient(object):
         self.session = session
         self.api_token = api_token
         self.url = url if url else "https://www.virustotal.com/vtapi/v2/file/"
-        log.setLevel(logging.INFO if not log_level else log_level)
+        log.setLevel(log_level if log_level else logging.INFO)
 
     def submit_file(self, resource_hash=None, stream=None):
         log.info("VTAnalysis: submit_file: hash = %s " % (resource_hash))
