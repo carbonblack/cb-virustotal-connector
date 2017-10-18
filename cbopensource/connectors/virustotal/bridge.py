@@ -1,6 +1,6 @@
 from cbint.utils.detonation import DetonationDaemon
 from cbint.utils.detonation.binary_analysis import (BinaryAnalysisProvider,
-                                                    AnalysisTemporaryError, AnalysisResult, AnalysisInProgress)
+                                                    AnalysisTemporaryError, AnalysisResult, AnalysisInProgress, AnalysisPermanentError)
 from cbapi.connection import CbAPISessionAdapter
 from apiclient_virustotal import (VirusTotalAnalysisClient, VTAPIQUOTAREACHED)
 from datetime import (datetime, timedelta)
@@ -13,7 +13,7 @@ log = logging.getLogger(__name__)
 
 
 class VirusTotalProvider(BinaryAnalysisProvider):
-    def __init__(self, name, virustotal_api_token, url=None, rescan_window=None,log_level=None):
+    def __init__(self, name, virustotal_api_token, url=None, rescan_window=None,log_level=None,submit_full_binaries=None):
         super(VirusTotalProvider, self).__init__(name)
         session = Session()
         tls_adapter = CbAPISessionAdapter(force_tls_1_2=True)
@@ -89,6 +89,8 @@ class VirusTotalProvider(BinaryAnalysisProvider):
 
     def analyze_binary(self, md5sum, binary_file_stream):
 
+        if not(self.submit_full_binaries):
+            raise AnalysisPermanentError(message="NOT SUBMITTING FULL BINARIES!")
         log.info("Submitting FULL binary %s to VT for analysis" % md5sum)
         try:
             response = self.virustotal_analysis.submit_file(resource_hash=md5sum, stream=binary_file_stream)
@@ -133,7 +135,7 @@ class VirusTotalConnector(DetonationDaemon):
 
     def get_provider(self):
         virustotal_provider = VirusTotalProvider(name=self.name, virustotal_api_token=self.virustotal_api_token,
-                                                 rescan_window=self.rescan_window, url=self.virustotal_url,log_level=self.log_level)
+                                                 rescan_window=self.rescan_window, url=self.virustotal_url,log_level=self.log_level,submit_full_binaries=self.submit_full_binaries)
 
         return virustotal_provider
 
@@ -151,6 +153,8 @@ class VirusTotalConnector(DetonationDaemon):
         self.virustotal_api_token = self.get_config_string("virustotal_api_token", None)
         self.virustotal_url = self.get_config_string("virustotal_url", None)
         self.rescan_window = self.get_config_string("rescan_window", None)
+        self.submit_full_binaries  = self.get_config_string("submit_full_binaries", None)
+        self.submit_full_binaries = True if self.submit_full_binaries else False
         self.log_level = logging.DEBUG if int(self.get_config_string("debug",0)) is 1 else logging.INFO
         log.setLevel(self.log_level)
 
