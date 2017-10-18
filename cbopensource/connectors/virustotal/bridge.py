@@ -67,7 +67,7 @@ class VirusTotalProvider(BinaryAnalysisProvider):
             return AnalysisInProgress(retry_in=180)
         elif response_code == 1:
             scan_id = response.get('scan_id', None)
-            now = datetime.now()
+            now = datetime.utcnow()
             scan_date_str = response.get('scan_date',None)
             scan_date = datetime.strptime(scan_date_str, "%Y-%m-%d %H:%M:%S") if scan_date_str else None
             log.info("Binary %s has not been scanned since: %s - timenow: %s" % (md5sum, scan_date, now))
