@@ -36,9 +36,15 @@ binary_filter_query=is_executable_image:true -(digsig_publisher:"Microsoft Corpo
 ; file hash at once. The "deep_scan_threads" setting specifies how many
 ; full file scans can be actively "in flight" at a given time. The default
 ; is that three files can be analyzed in parallel at any given time.
+;
+; ***WARNING***
+;
+; By setting virustotal_deep_scan_threads to GREATER THAN zero, you will be submitting FULL binaries to Virus Total
+; for analysis.  This is different from virustotal_quick_scan_threads which ONLY submit the HASH to Virus Total.
+;
 
-;virustotal_quick_scan_threads=1
-;virustotal_deep_scan_threads=3
+;virustotal_quick_scan_threads=2
+;virustotal_deep_scan_threads=0
 
 
 ;
