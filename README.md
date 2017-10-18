@@ -47,7 +47,9 @@ You must also add the `submit_full_binaries` option and set it to 1.  These opti
 A copy of these options is shown below:
 
 ```
-; ***WARNING SENDING FULL BINARIES TO VIRUSTOTAL IS A RISK ***
+; *** WARNING SENDING FULL BINARIES TO VIRUSTOTAL IS A RISK ***
+; *** other VT customers may be able to download binaries you submit to VirusTotal ***
+;
 ; To enable sending binaries to VirusTotal anyway, uncomment the following two lines
 ;
 ;submit_full_binaries=1
