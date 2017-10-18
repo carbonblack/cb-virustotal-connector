@@ -90,7 +90,7 @@ class VirusTotalProvider(BinaryAnalysisProvider):
 
     def analyze_binary(self, md5sum, binary_file_stream):
 
-        if not(self.submit_full_binaries):
+        if not self.submit_full_binaries:
             raise AnalysisPermanentError(message="NOT SUBMITTING FULL BINARIES!")
         log.info("Submitting FULL binary %s to VT for analysis" % md5sum)
         try:
@@ -124,7 +124,7 @@ class VirusTotalConnector(DetonationDaemon):
 
     @property
     def integration_name(self):
-        return 'Cb VT Connector 1.0.4'
+        return 'Cb VT Connector 1.0.5'
 
     @property
     def num_quick_scan_threads(self):
@@ -154,8 +154,14 @@ class VirusTotalConnector(DetonationDaemon):
         self.virustotal_api_token = self.get_config_string("virustotal_api_token", None)
         self.virustotal_url = self.get_config_string("virustotal_url", None)
         self.rescan_window = self.get_config_string("rescan_window", None)
-        self.submit_full_binaries  = self.get_config_string("submit_full_binaries", None)
-        self.submit_full_binaries = True if self.submit_full_binaries == "True" else False
+        self.submit_full_binaries  = self.get_config_string("submit_full_binaries", "false")
+        self.submit_full_binaries = True if self.submit_full_binaries.lower() in ['true', '1'] else False
+
+        if self.submit_full_binaries and self.num_deep_scan_threads > 0:
+            log.info("WARNING: This connector is currently configured to sumbit FULL binaries to VirusTotal")
+            log.info("WARNING: If this is not your intention please modify connector.conf")
+            log.info("WARNING: Set submit_full_binaries = 0 and virustotal_deep_scan_threads = 0")
+
         self.log_level = logging.DEBUG if int(self.get_config_string("debug",0)) is 1 else logging.INFO
         log.setLevel(self.log_level)
 
