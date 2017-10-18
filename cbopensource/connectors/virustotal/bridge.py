@@ -20,6 +20,7 @@ class VirusTotalProvider(BinaryAnalysisProvider):
         session.mount("https://", tls_adapter)
         self.virustotal_analysis = VirusTotalAnalysisClient(api_token=virustotal_api_token, session=session,log_level=log_level)
         self.url = url
+        self.submit_full_binaries = submit_full_binaries
         if rescan_window and "NEVER" not in rescan_window.upper():
             specs = {"M": "minutes", "W": "weeks", "D": "days", "S": "seconds", "H": "hours"}
             spec = specs[rescan_window[-1].upper()]
@@ -154,7 +155,7 @@ class VirusTotalConnector(DetonationDaemon):
         self.virustotal_url = self.get_config_string("virustotal_url", None)
         self.rescan_window = self.get_config_string("rescan_window", None)
         self.submit_full_binaries  = self.get_config_string("submit_full_binaries", None)
-        self.submit_full_binaries = True if self.submit_full_binaries else False
+        self.submit_full_binaries = True if self.submit_full_binaries == "True" else False
         self.log_level = logging.DEBUG if int(self.get_config_string("debug",0)) is 1 else logging.INFO
         log.setLevel(self.log_level)
 
