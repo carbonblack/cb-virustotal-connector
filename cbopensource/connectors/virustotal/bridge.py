@@ -54,7 +54,7 @@ class VirusTotalProvider(BinaryAnalysisProvider):
 
     def check_result_for(self, md5sum):
 
-        log.info("Submitting binary %s to VT for analysis" % md5sum)
+        log.info("Submitting hash %s to VT for analysis" % md5sum)
         try:
             response = self.virustotal_analysis.get_report(resource_hash=md5sum)
         except VTAPIQUOTAREACHED as vte:
@@ -89,7 +89,7 @@ class VirusTotalProvider(BinaryAnalysisProvider):
 
     def analyze_binary(self, md5sum, binary_file_stream):
 
-        log.info("Submitting binary %s to VT for analysis" % md5sum)
+        log.info("Submitting FULL binary %s to VT for analysis" % md5sum)
         try:
             response = self.virustotal_analysis.submit_file(resource_hash=md5sum, stream=binary_file_stream)
         except VTAPIQUOTAREACHED as vte:
@@ -125,11 +125,11 @@ class VirusTotalConnector(DetonationDaemon):
 
     @property
     def num_quick_scan_threads(self):
-        return self.get_config_integer("virustotal_quick_scan_threads", 1)
+        return self.get_config_integer("virustotal_quick_scan_threads", 2)
 
     @property
     def num_deep_scan_threads(self):
-        return self.get_config_integer("virustotal_deep_scan_threads", 3)
+        return self.get_config_integer("virustotal_deep_scan_threads", 0)
 
     def get_provider(self):
         virustotal_provider = VirusTotalProvider(name=self.name, virustotal_api_token=self.virustotal_api_token,
