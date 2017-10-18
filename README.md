@@ -36,6 +36,15 @@ into the `virustotal_api_token` variable in the
 Any errors will be logged into `/var/log/cb/integrations/virustotal/virustotal.log`.
 
 ## Additional Configuration Options
+By default, no deepscan threads will be started and the daemon will not submit full binaries to VirusTotal.
+
+To override this , and send full binaries to VT
+ ***WARNING***
+`
+virustotal_deep_scan_threads=3
+submit_full_binaries=True
+
+`
 
 By default, binaries which are already known by VirusTotal will not be resubmitted for rescanning.
 If this functionality is desired, the rescan_window option can be added to the configuration file 
