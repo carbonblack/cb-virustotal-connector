@@ -38,18 +38,25 @@ Any errors will be logged into `/var/log/cb/integrations/virustotal/virustotal.l
 ## Additional Configuration Options
 
 ### Full Binary Submission
-By default, the Cb VirusTotal connector is configured to not send full binaries to VirusTotal for analysis, it will only send hashes. 
 
-To enable FULL binary submission, change virustotal_deep_scan_threads to a value greater than 0. We recommend 1 or 2 threads.
-You must also add the submit_full_binaries option and set it to 1.  These options need to be changed in the `connector.conf` file.
+**As of the VirusTotal connector 1.0.5 and above, the Cb VirusTotal connector is configured to not send full binaries to VirusTotal for analysis, it will only send hashes.** 
+This is different behavior from previous versions (1.0.4 and earlier). Versions 1.0.4 and earlier will automatically send binaries to VirusTotal if VirusTotal does not already have a copy of the binary by default.
+
+To enable FULL binary submission, change `virustotal_deep_scan_threads` to a value greater than 0. We recommend 1 or 2 threads.
+You must also add the `submit_full_binaries` option and set it to 1.  These options need to be changed in the `connector.conf` file.
+A copy of these options is shown below:
 
 ```
-***WARNING SENDING FULL BINARIES TO VIRUSTOTAL IS A RISK ***
+; ***WARNING SENDING FULL BINARIES TO VIRUSTOTAL IS A RISK ***
+; To enable sending binaries to VirusTotal anyway, uncomment the following two lines
 ;
 ;submit_full_binaries=1
 ;virustotal_deep_scan_threads=1
 ;
 ```
+
+If you are upgrading from an earlier version to 1.0.5 or newer, uploading binaries to VirusTotal is *automatically* disabled until
+you explicitly enable it by adding the `submit_full_binaries=1` option described above into your configuration file.
 
 ### Virus Total Rescanning
 By default, binaries which are already known by VirusTotal will not be resubmitted for rescanning.
