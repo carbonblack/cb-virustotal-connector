@@ -124,7 +124,7 @@ class VirusTotalConnector(DetonationDaemon):
 
     @property
     def integration_name(self):
-        return 'Cb VT Connector 1.0.5'
+        return 'Cb VT Connector 1.0.6'
 
     @property
     def num_quick_scan_threads(self):
